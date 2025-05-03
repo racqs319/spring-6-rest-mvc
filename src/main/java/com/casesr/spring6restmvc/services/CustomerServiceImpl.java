@@ -4,6 +4,7 @@ import com.casesr.spring6restmvc.model.Customer;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -32,7 +33,9 @@ public class CustomerServiceImpl implements CustomerService {
                 .createdDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now()).build();
 
-        customerMap = Map.of(customer1.getId(), customer1, customer2.getId(), customer2);
+        customerMap = new HashMap<>();
+        customerMap.put(customer1.getId(), customer1);
+        customerMap.put(customer2.getId(), customer2);
 
     }
 
