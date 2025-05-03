@@ -108,7 +108,6 @@ public class BeerServiceImpl implements BeerService {
   public void updateBeerById(UUID beerId, Beer beer) {
 
     Beer existing = beerMap.get(beerId);
-    existing.setVersion(beer.getVersion());
     existing.setBeerName(beer.getBeerName());
     existing.setBeerStyle(beer.getBeerStyle());
     existing.setUpc(beer.getUpc());
