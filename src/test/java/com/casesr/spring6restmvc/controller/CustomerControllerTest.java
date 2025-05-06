@@ -66,7 +66,7 @@ class CustomerControllerTest {
 
     mockMvc
         .perform(
-            get(CustomerController.CUSTOMER_PATH + "/" + testCustomer.getId())
+            get(CustomerController.CUSTOMER_PATH_ID, testCustomer.getId())
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -101,7 +101,7 @@ class CustomerControllerTest {
 
     mockMvc
         .perform(
-            put(CustomerController.CUSTOMER_PATH + "/" + testCustomer.getId())
+            put(CustomerController.CUSTOMER_PATH_ID, testCustomer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testCustomer)))
@@ -119,7 +119,7 @@ class CustomerControllerTest {
 
     mockMvc
         .perform(
-            delete(CustomerController.CUSTOMER_PATH + "/" + testCustomer.getId())
+            delete(CustomerController.CUSTOMER_PATH_ID, testCustomer.getId())
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
 
@@ -138,7 +138,7 @@ class CustomerControllerTest {
 
     mockMvc
         .perform(
-            patch(CustomerController.CUSTOMER_PATH + "/" + customer.getId())
+            patch(CustomerController.CUSTOMER_PATH_ID, customer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(customerMap)))
