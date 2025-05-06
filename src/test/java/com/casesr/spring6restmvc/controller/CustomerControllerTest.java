@@ -12,6 +12,8 @@ import com.casesr.spring6restmvc.model.Customer;
 import com.casesr.spring6restmvc.services.CustomerService;
 import com.casesr.spring6restmvc.services.CustomerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,8 @@ class CustomerControllerTest {
   @MockitoBean CustomerService customerService;
 
   @Captor ArgumentCaptor<UUID> uuidArgumentCaptor;
+
+  @Captor ArgumentCaptor<Customer> customerArgumentCaptor;
 
   CustomerService customerServiceImpl;
 
@@ -119,5 +123,29 @@ class CustomerControllerTest {
     verify(customerService).deleteById(uuidArgumentCaptor.capture());
 
     assertThat(testCustomer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
+  }
+
+  @Test
+  void testPatchCustomer() throws Exception {
+
+    Customer customer = customerServiceImpl.listCustomers().get(0);
+
+    Map<String, Object> customerMap = new HashMap<>();
+    customerMap.put("customerName", "New Customer Name");
+
+    mockMvc
+        .perform(
+            patch("/api/v1/customer/" + customer.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(customerMap)))
+        .andExpect(status().isNoContent());
+
+    verify(customerService)
+        .patchCustomerById(uuidArgumentCaptor.capture(), customerArgumentCaptor.capture());
+
+    assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
+    assertThat(customerMap.get("customerName"))
+        .isEqualTo(customerArgumentCaptor.getValue().getCustomerName());
   }
 }
