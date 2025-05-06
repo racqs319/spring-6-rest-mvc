@@ -12,6 +12,8 @@ import com.casesr.spring6restmvc.model.Beer;
 import com.casesr.spring6restmvc.services.BeerService;
 import com.casesr.spring6restmvc.services.BeerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,8 @@ class BeerControllerTest {
   @MockitoBean BeerService beerService;
 
   @Captor ArgumentCaptor<UUID> uuidArgumentCaptor;
+
+  @Captor ArgumentCaptor<Beer> beerArgumentCaptor;
 
   BeerService beerServiceImpl;
 
@@ -116,5 +120,26 @@ class BeerControllerTest {
     verify(beerService).deleteById(uuidArgumentCaptor.capture());
 
     assertThat(testBeer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
+  }
+
+  @Test
+  void testPatchBeer() throws Exception {
+
+    Beer beer = beerServiceImpl.listBeers().get(0);
+
+    Map<String, Object> beerMap = new HashMap<>();
+    beerMap.put("beerName", "New Beer Name");
+
+    mockMvc
+        .perform(
+            patch("/api/v1/beer/" + beer.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(beerMap)))
+        .andExpect(status().isNoContent());
+
+    verify(beerService).patchBeerById(uuidArgumentCaptor.capture(), beerArgumentCaptor.capture());
+    assertThat(beer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
+    assertThat(beerMap.get("beerName")).isEqualTo(beerArgumentCaptor.getValue().getBeerName());
   }
 }
