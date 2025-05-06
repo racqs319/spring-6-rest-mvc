@@ -51,7 +51,7 @@ class CustomerControllerTest {
     given(customerService.listCustomers()).willReturn(customerServiceImpl.listCustomers());
 
     mockMvc
-        .perform(get("/api/v1/customer").accept(MediaType.APPLICATION_JSON))
+        .perform(get(CustomerController.CUSTOMER_PATH).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.length()", is(2)));
@@ -65,7 +65,9 @@ class CustomerControllerTest {
     given(customerService.getCustomerById(testCustomer.getId())).willReturn(testCustomer);
 
     mockMvc
-        .perform(get("/api/v1/customer/" + testCustomer.getId()).accept(MediaType.APPLICATION_JSON))
+        .perform(
+            get(CustomerController.CUSTOMER_PATH + "/" + testCustomer.getId())
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id", is(testCustomer.getId().toString())))
@@ -84,7 +86,7 @@ class CustomerControllerTest {
 
     mockMvc
         .perform(
-            post("/api/v1/customer")
+            post(CustomerController.CUSTOMER_PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testCustomer)))
@@ -99,7 +101,7 @@ class CustomerControllerTest {
 
     mockMvc
         .perform(
-            put("/api/v1/customer/" + testCustomer.getId())
+            put(CustomerController.CUSTOMER_PATH + "/" + testCustomer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testCustomer)))
@@ -117,7 +119,8 @@ class CustomerControllerTest {
 
     mockMvc
         .perform(
-            delete("/api/v1/customer/" + testCustomer.getId()).accept(MediaType.APPLICATION_JSON))
+            delete(CustomerController.CUSTOMER_PATH + "/" + testCustomer.getId())
+                .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
 
     verify(customerService).deleteById(uuidArgumentCaptor.capture());
@@ -135,7 +138,7 @@ class CustomerControllerTest {
 
     mockMvc
         .perform(
-            patch("/api/v1/customer/" + customer.getId())
+            patch(CustomerController.CUSTOMER_PATH + "/" + customer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(customerMap)))
