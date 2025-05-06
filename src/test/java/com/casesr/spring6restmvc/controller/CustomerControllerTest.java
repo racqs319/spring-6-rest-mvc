@@ -1,13 +1,17 @@
 package com.casesr.spring6restmvc.controller;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.casesr.spring6restmvc.model.Customer;
 import com.casesr.spring6restmvc.services.CustomerService;
 import com.casesr.spring6restmvc.services.CustomerServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,9 +24,16 @@ class CustomerControllerTest {
 
   @Autowired MockMvc mockMvc;
 
+  @Autowired ObjectMapper objectMapper;
+
   @MockitoBean CustomerService customerService;
 
-  CustomerService customerServiceImpl = new CustomerServiceImpl();
+  CustomerService customerServiceImpl;
+
+  @BeforeEach
+  void setUp() {
+    customerServiceImpl = new CustomerServiceImpl();
+  }
 
   @Test
   void listCustomers() throws Exception {
@@ -49,5 +60,25 @@ class CustomerControllerTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id", is(testCustomer.getId().toString())))
         .andExpect(jsonPath("$.customerName", is(testCustomer.getCustomerName())));
+  }
+
+  @Test
+  void testCreateNewCustomer() throws Exception {
+
+    Customer testCustomer = customerServiceImpl.listCustomers().get(0);
+    testCustomer.setId(null);
+    testCustomer.setVersion(null);
+
+    given(customerService.saveCustomer(any(Customer.class)))
+        .willReturn(customerServiceImpl.listCustomers().get(1));
+
+    mockMvc
+        .perform(
+            post("/api/v1/customer")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(testCustomer)))
+        .andExpect(status().isCreated())
+        .andExpect(header().exists("Location"));
   }
 }
