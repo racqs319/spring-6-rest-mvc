@@ -56,7 +56,7 @@ public class CustomerController {
   }
 
   @DeleteMapping(CUSTOMER_PATH_ID)
-  public ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
+  public ResponseEntity<Customer> deleteById(@PathVariable("customerId") UUID customerId) {
 
     customerService.deleteById(customerId);
 
@@ -64,7 +64,7 @@ public class CustomerController {
   }
 
   @PatchMapping(CUSTOMER_PATH_ID)
-  public ResponseEntity patchCustomerById(
+  public ResponseEntity<Customer> patchCustomerById(
       @PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
 
     customerService.patchCustomerById(customerId, customer);
