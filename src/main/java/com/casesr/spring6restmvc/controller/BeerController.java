@@ -1,5 +1,6 @@
 package com.casesr.spring6restmvc.controller;
 
+import com.casesr.spring6restmvc.exception.NotFoundException;
 import com.casesr.spring6restmvc.model.Beer;
 import com.casesr.spring6restmvc.services.BeerService;
 import java.util.List;
@@ -35,7 +36,7 @@ public class BeerController {
 
     log.debug("Get Beer by Id - in controller");
 
-    return beerService.getBeerById(beerId);
+    return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
   }
 
   @PostMapping(BEER_PATH)
@@ -74,5 +75,4 @@ public class BeerController {
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
-
 }

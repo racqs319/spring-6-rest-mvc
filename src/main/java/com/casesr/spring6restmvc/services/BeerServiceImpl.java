@@ -2,16 +2,12 @@ package com.casesr.spring6restmvc.services;
 
 import com.casesr.spring6restmvc.model.Beer;
 import com.casesr.spring6restmvc.model.BeerStyle;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author Racquel.Cases
@@ -77,11 +73,11 @@ public class BeerServiceImpl implements BeerService {
   }
 
   @Override
-  public Beer getBeerById(UUID id) {
+  public Optional<Beer> getBeerById(UUID id) {
 
     log.debug("Get Beer by Id - in service");
 
-    return beerMap.get(id);
+    return Optional.of(beerMap.get(id));
   }
 
   @Override

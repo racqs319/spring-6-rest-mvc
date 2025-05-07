@@ -8,13 +8,13 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.casesr.spring6restmvc.exception.NotFoundException;
 import com.casesr.spring6restmvc.model.Customer;
 import com.casesr.spring6restmvc.services.CustomerService;
 import com.casesr.spring6restmvc.services.CustomerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ class CustomerControllerTest {
 
     Customer testCustomer = customerServiceImpl.listCustomers().get(0);
 
-    given(customerService.getCustomerById(testCustomer.getId())).willReturn(testCustomer);
+    given(customerService.getCustomerById(testCustomer.getId())).willReturn(Optional.of(testCustomer));
 
     mockMvc
         .perform(
@@ -78,7 +78,7 @@ class CustomerControllerTest {
   @Test
   void testCustomerByIdNotFound() throws Exception {
 
-    given(customerService.getCustomerById(any(UUID.class))).willThrow(NotFoundException.class);
+    given(customerService.getCustomerById(any(UUID.class))).willReturn(Optional.empty());
 
     mockMvc
         .perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID()))

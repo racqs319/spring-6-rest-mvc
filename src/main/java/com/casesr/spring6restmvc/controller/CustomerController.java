@@ -1,5 +1,6 @@
 package com.casesr.spring6restmvc.controller;
 
+import com.casesr.spring6restmvc.exception.NotFoundException;
 import com.casesr.spring6restmvc.model.Customer;
 import com.casesr.spring6restmvc.services.CustomerService;
 import java.util.List;
@@ -17,62 +18,57 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class CustomerController {
 
-    public static final String CUSTOMER_PATH = "/api/v1/customer";
-    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{customerId}";
+  public static final String CUSTOMER_PATH = "/api/v1/customer";
+  public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{customerId}";
 
-    private final CustomerService customerService;
+  private final CustomerService customerService;
 
-    @GetMapping(CUSTOMER_PATH)
-    public List<Customer> listCustomers() {
+  @GetMapping(CUSTOMER_PATH)
+  public List<Customer> listCustomers() {
 
-        return customerService.listCustomers();
+    return customerService.listCustomers();
+  }
 
-    }
+  @GetMapping(CUSTOMER_PATH_ID)
+  public Customer getCustomerById(@PathVariable("customerId") UUID customerId) {
 
-    @GetMapping(CUSTOMER_PATH_ID)
-    public Customer getCustomerById(@PathVariable("customerId") UUID customerId) {
+    return customerService.getCustomerById(customerId).orElseThrow(NotFoundException::new);
+  }
 
-        return customerService.getCustomerById(customerId);
+  @PostMapping(CUSTOMER_PATH)
+  public ResponseEntity<Customer> handlePost(@RequestBody Customer customer) {
 
-    }
+    Customer savedCustomer = customerService.saveCustomer(customer);
 
-    @PostMapping(CUSTOMER_PATH)
-    public ResponseEntity<Customer> handlePost(@RequestBody Customer customer) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Location", "/api/v1/customer/" + savedCustomer.getId().toString());
 
-        Customer savedCustomer = customerService.saveCustomer(customer);
+    return new ResponseEntity<>(headers, HttpStatus.CREATED);
+  }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/api/v1/customer/" + savedCustomer.getId().toString());
+  @PutMapping(CUSTOMER_PATH_ID)
+  public ResponseEntity<Customer> updateById(
+      @PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
 
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    customerService.updateCustomerById(customerId, customer);
 
-    }
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
 
-    @PutMapping(CUSTOMER_PATH_ID)
-    public ResponseEntity<Customer> updateById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
+  @DeleteMapping(CUSTOMER_PATH_ID)
+  public ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
 
-        customerService.updateCustomerById(customerId, customer);
+    customerService.deleteById(customerId);
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
 
-    }
+  @PatchMapping(CUSTOMER_PATH_ID)
+  public ResponseEntity patchCustomerById(
+      @PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
 
-    @DeleteMapping(CUSTOMER_PATH_ID)
-    public ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
+    customerService.patchCustomerById(customerId, customer);
 
-        customerService.deleteById(customerId);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-    }
-
-    @PatchMapping(CUSTOMER_PATH_ID)
-    public ResponseEntity patchCustomerById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
-
-        customerService.patchCustomerById(customerId, customer);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-    }
-
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
 }

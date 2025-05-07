@@ -8,13 +8,13 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.casesr.spring6restmvc.exception.NotFoundException;
 import com.casesr.spring6restmvc.model.Beer;
 import com.casesr.spring6restmvc.services.BeerService;
 import com.casesr.spring6restmvc.services.BeerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +51,7 @@ class BeerControllerTest {
 
     Beer testBeer = beerServiceImpl.listBeers().get(0);
 
-    given(beerService.getBeerById(any(UUID.class))).willReturn(testBeer);
+    given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.of(testBeer));
 
     mockMvc
         .perform(
@@ -65,7 +65,7 @@ class BeerControllerTest {
   @Test
   void testGetByIdNotFound() throws Exception {
 
-    given(beerService.getBeerById(any(UUID.class))).willThrow(NotFoundException.class);
+    given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.empty());
 
     mockMvc
         .perform(get(BeerController.BEER_PATH_ID, UUID.randomUUID()))

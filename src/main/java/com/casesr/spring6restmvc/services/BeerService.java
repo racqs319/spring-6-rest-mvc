@@ -1,8 +1,8 @@
 package com.casesr.spring6restmvc.services;
 
 import com.casesr.spring6restmvc.model.Beer;
-
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -12,7 +12,7 @@ public interface BeerService {
 
     List<Beer> listBeers();
 
-    Beer getBeerById(UUID id);
+    Optional<Beer> getBeerById(UUID id);
 
     Beer saveBeer(Beer beer);
 
