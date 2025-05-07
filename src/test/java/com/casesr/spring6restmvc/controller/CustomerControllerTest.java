@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.casesr.spring6restmvc.model.Customer;
+import com.casesr.spring6restmvc.model.CustomerDTO;
 import com.casesr.spring6restmvc.services.CustomerService;
 import com.casesr.spring6restmvc.services.CustomerServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +37,7 @@ class CustomerControllerTest {
 
   @Captor ArgumentCaptor<UUID> uuidArgumentCaptor;
 
-  @Captor ArgumentCaptor<Customer> customerArgumentCaptor;
+  @Captor ArgumentCaptor<CustomerDTO> customerArgumentCaptor;
 
   CustomerService customerServiceImpl;
 
@@ -61,9 +61,10 @@ class CustomerControllerTest {
   @Test
   void getCustomerById() throws Exception {
 
-    Customer testCustomer = customerServiceImpl.listCustomers().get(0);
+    CustomerDTO testCustomer = customerServiceImpl.listCustomers().get(0);
 
-    given(customerService.getCustomerById(testCustomer.getId())).willReturn(Optional.of(testCustomer));
+    given(customerService.getCustomerById(testCustomer.getId()))
+        .willReturn(Optional.of(testCustomer));
 
     mockMvc
         .perform(
@@ -88,11 +89,11 @@ class CustomerControllerTest {
   @Test
   void testCreateNewCustomer() throws Exception {
 
-    Customer testCustomer = customerServiceImpl.listCustomers().get(0);
+    CustomerDTO testCustomer = customerServiceImpl.listCustomers().get(0);
     testCustomer.setId(null);
     testCustomer.setVersion(null);
 
-    given(customerService.saveCustomer(any(Customer.class)))
+    given(customerService.saveCustomer(any(CustomerDTO.class)))
         .willReturn(customerServiceImpl.listCustomers().get(1));
 
     mockMvc
@@ -108,7 +109,7 @@ class CustomerControllerTest {
   @Test
   void testUpdateCustomer() throws Exception {
 
-    Customer testCustomer = customerServiceImpl.listCustomers().get(0);
+    CustomerDTO testCustomer = customerServiceImpl.listCustomers().get(0);
 
     mockMvc
         .perform(
@@ -118,7 +119,8 @@ class CustomerControllerTest {
                 .content(objectMapper.writeValueAsString(testCustomer)))
         .andExpect(status().isNoContent());
 
-    verify(customerService).updateCustomerById(uuidArgumentCaptor.capture(), any(Customer.class));
+    verify(customerService)
+        .updateCustomerById(uuidArgumentCaptor.capture(), any(CustomerDTO.class));
 
     assertThat(testCustomer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
   }
@@ -126,7 +128,7 @@ class CustomerControllerTest {
   @Test
   void testDeleteCustomer() throws Exception {
 
-    Customer testCustomer = customerServiceImpl.listCustomers().get(0);
+    CustomerDTO testCustomer = customerServiceImpl.listCustomers().get(0);
 
     mockMvc
         .perform(
@@ -142,7 +144,7 @@ class CustomerControllerTest {
   @Test
   void testPatchCustomer() throws Exception {
 
-    Customer customer = customerServiceImpl.listCustomers().get(0);
+    CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
     Map<String, Object> customerMap = new HashMap<>();
     customerMap.put("customerName", "New Customer Name");

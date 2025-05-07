@@ -1,18 +1,17 @@
 package com.casesr.spring6restmvc.model;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.Builder;
+import lombok.Data;
 
 /**
  * @author Racquel.Cases
  */
 @Data
 @Builder
-public class Beer {
+public class BeerDTO {
 
     private UUID id;
     private Integer version;

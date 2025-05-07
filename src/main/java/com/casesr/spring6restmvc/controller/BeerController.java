@@ -1,7 +1,7 @@
 package com.casesr.spring6restmvc.controller;
 
 import com.casesr.spring6restmvc.exception.NotFoundException;
-import com.casesr.spring6restmvc.model.Beer;
+import com.casesr.spring6restmvc.model.BeerDTO;
 import com.casesr.spring6restmvc.services.BeerService;
 import java.util.List;
 import java.util.UUID;
@@ -26,13 +26,13 @@ public class BeerController {
   private final BeerService beerService;
 
   @GetMapping(BEER_PATH)
-  public List<Beer> listBeers() {
+  public List<BeerDTO> listBeers() {
 
     return beerService.listBeers();
   }
 
   @GetMapping(BEER_PATH_ID)
-  public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
+  public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId) {
 
     log.debug("Get Beer by Id - in controller");
 
@@ -40,9 +40,9 @@ public class BeerController {
   }
 
   @PostMapping(BEER_PATH)
-  public ResponseEntity<Beer> handlePost(@RequestBody Beer beer) {
+  public ResponseEntity<BeerDTO> handlePost(@RequestBody BeerDTO beer) {
 
-    Beer savedBeer = beerService.saveBeer(beer);
+    BeerDTO savedBeer = beerService.saveBeer(beer);
 
     HttpHeaders headers = new HttpHeaders();
     headers.add("Location", "/api/v1/beer/" + savedBeer.getId().toString());
@@ -51,8 +51,8 @@ public class BeerController {
   }
 
   @PutMapping(BEER_PATH_ID)
-  public ResponseEntity<Beer> updateById(
-      @PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+  public ResponseEntity<BeerDTO> updateById(
+      @PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
 
     beerService.updateBeerById(beerId, beer);
 
@@ -60,7 +60,7 @@ public class BeerController {
   }
 
   @DeleteMapping(BEER_PATH_ID)
-  public ResponseEntity<Beer> deleteById(@PathVariable("beerId") UUID beerId) {
+  public ResponseEntity<BeerDTO> deleteById(@PathVariable("beerId") UUID beerId) {
 
     beerService.deleteById(beerId);
 
@@ -68,8 +68,8 @@ public class BeerController {
   }
 
   @PatchMapping(BEER_PATH_ID)
-  public ResponseEntity<Beer> updateBeerPatchById(
-      @PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+  public ResponseEntity<BeerDTO> updateBeerPatchById(
+      @PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
 
     beerService.patchBeerById(beerId, beer);
 
