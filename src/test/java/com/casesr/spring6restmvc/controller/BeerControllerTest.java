@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.casesr.spring6restmvc.exception.NotFoundException;
 import com.casesr.spring6restmvc.model.Beer;
 import com.casesr.spring6restmvc.services.BeerService;
 import com.casesr.spring6restmvc.services.BeerServiceImpl;
@@ -59,6 +60,16 @@ class BeerControllerTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id", is(testBeer.getId().toString())))
         .andExpect(jsonPath("$.beerName", is(testBeer.getBeerName())));
+  }
+
+  @Test
+  void testGetByIdNotFound() throws Exception {
+
+    given(beerService.getBeerById(any(UUID.class))).willThrow(NotFoundException.class);
+
+    mockMvc
+        .perform(get(BeerController.BEER_PATH_ID, UUID.randomUUID()))
+        .andExpect(status().isNotFound());
   }
 
   @Test

@@ -1,5 +1,6 @@
 package com.casesr.spring6restmvc.controller;
 
+import com.casesr.spring6restmvc.exception.NotFoundException;
 import com.casesr.spring6restmvc.model.Beer;
 import com.casesr.spring6restmvc.services.BeerService;
 import java.util.List;
@@ -59,7 +60,7 @@ public class BeerController {
   }
 
   @DeleteMapping(BEER_PATH_ID)
-  public ResponseEntity deleteById(@PathVariable("beerId") UUID beerId) {
+  public ResponseEntity<Beer> deleteById(@PathVariable("beerId") UUID beerId) {
 
     beerService.deleteById(beerId);
 
@@ -67,11 +68,16 @@ public class BeerController {
   }
 
   @PatchMapping(BEER_PATH_ID)
-  public ResponseEntity updateBeerPatchById(
+  public ResponseEntity<Beer> updateBeerPatchById(
       @PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
 
     beerService.patchBeerById(beerId, beer);
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<Beer> handleNotFound() {
+    return ResponseEntity.notFound().build();
   }
 }
