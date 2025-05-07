@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.casesr.spring6restmvc.exception.NotFoundException;
 import com.casesr.spring6restmvc.model.Customer;
 import com.casesr.spring6restmvc.services.CustomerService;
 import com.casesr.spring6restmvc.services.CustomerServiceImpl;
@@ -72,6 +73,16 @@ class CustomerControllerTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id", is(testCustomer.getId().toString())))
         .andExpect(jsonPath("$.customerName", is(testCustomer.getCustomerName())));
+  }
+
+  @Test
+  void testCustomerByIdNotFound() throws Exception {
+
+    given(customerService.getCustomerById(any(UUID.class))).willThrow(NotFoundException.class);
+
+    mockMvc
+        .perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID()))
+        .andExpect(status().isNotFound());
   }
 
   @Test

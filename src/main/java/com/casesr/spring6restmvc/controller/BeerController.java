@@ -1,6 +1,5 @@
 package com.casesr.spring6restmvc.controller;
 
-import com.casesr.spring6restmvc.exception.NotFoundException;
 import com.casesr.spring6restmvc.model.Beer;
 import com.casesr.spring6restmvc.services.BeerService;
 import java.util.List;
@@ -76,8 +75,4 @@ public class BeerController {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
-  @ExceptionHandler(NotFoundException.class)
-  public ResponseEntity<Beer> handleNotFound() {
-    return ResponseEntity.notFound().build();
-  }
 }
