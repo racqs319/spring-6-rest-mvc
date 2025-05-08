@@ -1,11 +1,10 @@
 package com.casesr.spring6restmvc.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 /**
  * @author Racquel.Cases
@@ -18,8 +17,14 @@ import lombok.*;
 @NoArgsConstructor
 public class Customer {
 
-  @Id private UUID id;
+  @Id
+  @GeneratedValue(generator = "UUID")
+  @UuidGenerator
+  @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
+  private UUID id;
+
   @Version private Integer version;
+
   private String customerName;
   private LocalDateTime createdDate;
   private LocalDateTime lastModifiedDate;
