@@ -104,8 +104,10 @@ class BeerControllerTest {
 
   @Test
   void testUpdateBeer() throws Exception {
-
     BeerDTO testBeer = beerServiceImpl.listBeers().get(0);
+
+    given(beerService.updateBeerById(any(UUID.class), any(BeerDTO.class)))
+        .willReturn(Optional.of(testBeer));
 
     mockMvc
         .perform(
@@ -122,8 +124,9 @@ class BeerControllerTest {
 
   @Test
   void testDeleteBeer() throws Exception {
-
     BeerDTO testBeer = beerServiceImpl.listBeers().get(0);
+
+    given(beerService.deleteById(any())).willReturn(true);
 
     mockMvc
         .perform(

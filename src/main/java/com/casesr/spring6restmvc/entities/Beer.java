@@ -7,13 +7,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Racquel.Cases
  */
 @Getter
-@Service
+@Setter
 @Builder
 @Entity
 @AllArgsConstructor
