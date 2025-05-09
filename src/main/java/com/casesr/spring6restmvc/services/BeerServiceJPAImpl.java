@@ -22,12 +22,12 @@ public class BeerServiceJPAImpl implements BeerService {
 
   @Override
   public List<BeerDTO> listBeers() {
-    return List.of();
+    return beerRepository.findAll().stream().map(beerMapper::beerToBeerDto).toList();
   }
 
   @Override
   public Optional<BeerDTO> getBeerById(UUID id) {
-    return Optional.empty();
+    return Optional.ofNullable(beerMapper.beerToBeerDto(beerRepository.findById(id).orElse(null)));
   }
 
   @Override
