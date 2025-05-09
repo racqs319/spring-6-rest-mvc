@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 /**
  * @author Racquel.Cases
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface CustomerMapper {
   Customer customerDtoToCustomer(CustomerDTO customerDTO);
 
