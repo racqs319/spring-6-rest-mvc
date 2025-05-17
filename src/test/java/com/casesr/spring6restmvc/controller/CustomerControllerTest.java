@@ -28,7 +28,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(CustomerController.class)
 class CustomerControllerTest {
-
   @Autowired MockMvc mockMvc;
 
   @Autowired ObjectMapper objectMapper;
@@ -48,7 +47,6 @@ class CustomerControllerTest {
 
   @Test
   void listCustomers() throws Exception {
-
     given(customerService.listCustomers()).willReturn(customerServiceImpl.listCustomers());
 
     mockMvc
@@ -60,7 +58,6 @@ class CustomerControllerTest {
 
   @Test
   void getCustomerById() throws Exception {
-
     CustomerDTO testCustomer = customerServiceImpl.listCustomers().get(0);
 
     given(customerService.getCustomerById(testCustomer.getId()))
@@ -78,7 +75,6 @@ class CustomerControllerTest {
 
   @Test
   void testCustomerByIdNotFound() throws Exception {
-
     given(customerService.getCustomerById(any(UUID.class))).willReturn(Optional.empty());
 
     mockMvc
@@ -88,7 +84,6 @@ class CustomerControllerTest {
 
   @Test
   void testCreateNewCustomer() throws Exception {
-
     CustomerDTO testCustomer = customerServiceImpl.listCustomers().get(0);
     testCustomer.setId(null);
     testCustomer.setVersion(null);
@@ -108,8 +103,10 @@ class CustomerControllerTest {
 
   @Test
   void testUpdateCustomer() throws Exception {
-
     CustomerDTO testCustomer = customerServiceImpl.listCustomers().get(0);
+
+    given(customerService.updateCustomerById(any(UUID.class), any(CustomerDTO.class)))
+        .willReturn(Optional.of(testCustomer));
 
     mockMvc
         .perform(
@@ -127,8 +124,9 @@ class CustomerControllerTest {
 
   @Test
   void testDeleteCustomer() throws Exception {
-
     CustomerDTO testCustomer = customerServiceImpl.listCustomers().get(0);
+
+    given(customerService.deleteById(any())).willReturn(true);
 
     mockMvc
         .perform(
@@ -143,8 +141,10 @@ class CustomerControllerTest {
 
   @Test
   void testPatchCustomer() throws Exception {
-
     CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
+
+    given(customerService.patchCustomerById(any(UUID.class), any(CustomerDTO.class)))
+        .willReturn(Optional.of(customer));
 
     Map<String, Object> customerMap = new HashMap<>();
     customerMap.put("customerName", "New Customer Name");

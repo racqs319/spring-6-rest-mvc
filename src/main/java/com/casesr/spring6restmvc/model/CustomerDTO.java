@@ -11,11 +11,9 @@ import lombok.Data;
 @Data
 @Builder
 public class CustomerDTO {
-
-    private UUID id;
-    private String customerName;
-    private Integer version;
-    private LocalDateTime createdDate;
-    private LocalDateTime lastModifiedDate;
-
+  private UUID id;
+  private String customerName;
+  private Integer version;
+  private LocalDateTime createdDate;
+  private LocalDateTime lastModifiedDate;
 }

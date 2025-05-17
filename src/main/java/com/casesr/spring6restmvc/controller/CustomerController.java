@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 public class CustomerController {
-
   public static final String CUSTOMER_PATH = "/api/v1/customer";
   public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{customerId}";
 
@@ -25,19 +24,16 @@ public class CustomerController {
 
   @GetMapping(CUSTOMER_PATH)
   public List<CustomerDTO> listCustomers() {
-
     return customerService.listCustomers();
   }
 
   @GetMapping(CUSTOMER_PATH_ID)
   public CustomerDTO getCustomerById(@PathVariable("customerId") UUID customerId) {
-
     return customerService.getCustomerById(customerId).orElseThrow(NotFoundException::new);
   }
 
   @PostMapping(CUSTOMER_PATH)
   public ResponseEntity<CustomerDTO> handlePost(@RequestBody CustomerDTO customer) {
-
     CustomerDTO savedCustomer = customerService.saveCustomer(customer);
 
     HttpHeaders headers = new HttpHeaders();
@@ -49,16 +45,18 @@ public class CustomerController {
   @PutMapping(CUSTOMER_PATH_ID)
   public ResponseEntity<CustomerDTO> updateById(
       @PathVariable("customerId") UUID customerId, @RequestBody CustomerDTO customer) {
-
-    customerService.updateCustomerById(customerId, customer);
+    if (customerService.updateCustomerById(customerId, customer).isEmpty()) {
+      throw new NotFoundException();
+    }
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
   @DeleteMapping(CUSTOMER_PATH_ID)
   public ResponseEntity<CustomerDTO> deleteById(@PathVariable("customerId") UUID customerId) {
-
-    customerService.deleteById(customerId);
+    if (!customerService.deleteById(customerId)) {
+      throw new NotFoundException();
+    }
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
@@ -66,8 +64,9 @@ public class CustomerController {
   @PatchMapping(CUSTOMER_PATH_ID)
   public ResponseEntity<CustomerDTO> patchCustomerById(
       @PathVariable("customerId") UUID customerId, @RequestBody CustomerDTO customer) {
-
-    customerService.patchCustomerById(customerId, customer);
+    if (customerService.patchCustomerById(customerId, customer).isEmpty()) {
+      throw new NotFoundException();
+    }
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }

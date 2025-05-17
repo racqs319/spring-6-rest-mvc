@@ -11,11 +11,9 @@ import org.springframework.util.StringUtils;
  */
 @Service
 public class CustomerServiceImpl implements CustomerService {
-
   private Map<UUID, CustomerDTO> customerMap;
 
   public CustomerServiceImpl() {
-
     CustomerDTO customer1 =
         CustomerDTO.builder()
             .id(UUID.randomUUID())
@@ -51,7 +49,6 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public CustomerDTO saveCustomer(CustomerDTO customer) {
-
     CustomerDTO savedCustomer =
         CustomerDTO.builder()
             .id(UUID.randomUUID())
@@ -67,22 +64,23 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   @Override
-  public void updateCustomerById(UUID customerId, CustomerDTO customer) {
-
+  public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
     CustomerDTO existing = customerMap.get(customerId);
     existing.setCustomerName(customer.getCustomerName());
     existing.setLastModifiedDate(LocalDateTime.now());
+
+    return Optional.of(existing);
   }
 
   @Override
-  public void deleteById(UUID customerId) {
-
+  public Boolean deleteById(UUID customerId) {
     customerMap.remove(customerId);
+
+    return true;
   }
 
   @Override
-  public void patchCustomerById(UUID customerId, CustomerDTO customer) {
-
+  public Optional<CustomerDTO> patchCustomerById(UUID customerId, CustomerDTO customer) {
     CustomerDTO existing = customerMap.get(customerId);
 
     if (StringUtils.hasText(customer.getCustomerName())) {
@@ -90,5 +88,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     existing.setLastModifiedDate(LocalDateTime.now());
+
+    return Optional.of(existing);
   }
 }

@@ -8,6 +8,7 @@ import com.casesr.spring6restmvc.exception.NotFoundException;
 import com.casesr.spring6restmvc.mappers.BeerMapper;
 import com.casesr.spring6restmvc.model.BeerDTO;
 import com.casesr.spring6restmvc.repositories.BeerRepository;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -117,5 +118,34 @@ class BeerControllerIT {
   @Test
   void testDeleteBeerNotFound() {
     assertThrows(NotFoundException.class, () -> beerController.deleteById(UUID.randomUUID()));
+  }
+
+  @Rollback
+  @Transactional
+  @Test
+  void testPatchExistingBeer() {
+    Beer beer = beerRepository.findAll().get(0);
+    BeerDTO beerDTO = beerMapper.beerToBeerDto(beer);
+    beerDTO.setId(null);
+    beerDTO.setVersion(null);
+    final String beerName = "Updated Beer";
+    beerDTO.setBeerName(beerName);
+    final BigDecimal beerPrice = new BigDecimal("10.00");
+    beerDTO.setPrice(beerPrice);
+
+    ResponseEntity<BeerDTO> response = beerController.patchBeerById(beer.getId(), beerDTO);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+
+    Beer updatedBeer = beerRepository.findById(beer.getId()).get();
+    assertThat(updatedBeer.getBeerName()).isEqualTo(beerName);
+    assertThat(updatedBeer.getPrice()).isEqualTo(beerPrice);
+  }
+
+  @Test
+  void testPatchBeerNotFound() {
+    assertThrows(
+        NotFoundException.class,
+        () -> beerController.patchBeerById(UUID.randomUUID(), BeerDTO.builder().build()));
   }
 }

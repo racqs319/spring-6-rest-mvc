@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
 class BeerRepositoryTest {
-
   @Autowired BeerRepository beerRepository;
 
   @Test

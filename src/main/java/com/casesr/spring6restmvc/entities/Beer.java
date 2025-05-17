@@ -18,7 +18,6 @@ import org.hibernate.annotations.UuidGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Beer {
-
   @Id
   @GeneratedValue(generator = "UUID")
   @UuidGenerator

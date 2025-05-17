@@ -28,7 +28,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(BeerController.class)
 class BeerControllerTest {
-
   @Autowired MockMvc mockMvc;
 
   @Autowired ObjectMapper objectMapper;
@@ -48,7 +47,6 @@ class BeerControllerTest {
 
   @Test
   public void getBeerById() throws Exception {
-
     BeerDTO testBeer = beerServiceImpl.listBeers().get(0);
 
     given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.of(testBeer));
@@ -64,7 +62,6 @@ class BeerControllerTest {
 
   @Test
   void testGetByIdNotFound() throws Exception {
-
     given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.empty());
 
     mockMvc
@@ -85,7 +82,6 @@ class BeerControllerTest {
 
   @Test
   void testCreateNewBeer() throws Exception {
-
     BeerDTO testBeer = beerServiceImpl.listBeers().get(0);
     testBeer.setId(null);
     testBeer.setVersion(null);
@@ -141,7 +137,6 @@ class BeerControllerTest {
 
   @Test
   void testPatchBeer() throws Exception {
-
     BeerDTO beer = beerServiceImpl.listBeers().get(0);
 
     Map<String, Object> beerMap = new HashMap<>();

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class BeerController {
-
   public static final String BEER_PATH = "/api/v1/beer";
   public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
 
@@ -27,13 +26,11 @@ public class BeerController {
 
   @GetMapping(BEER_PATH)
   public List<BeerDTO> listBeers() {
-
     return beerService.listBeers();
   }
 
   @GetMapping(BEER_PATH_ID)
   public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId) {
-
     log.debug("Get Beer by Id - in controller");
 
     return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
@@ -41,7 +38,6 @@ public class BeerController {
 
   @PostMapping(BEER_PATH)
   public ResponseEntity<BeerDTO> handlePost(@RequestBody BeerDTO beer) {
-
     BeerDTO savedBeer = beerService.saveBeer(beer);
 
     HttpHeaders headers = new HttpHeaders();
@@ -53,7 +49,6 @@ public class BeerController {
   @PutMapping(BEER_PATH_ID)
   public ResponseEntity<BeerDTO> updateById(
       @PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
-
     if (beerService.updateBeerById(beerId, beer).isEmpty()) {
       throw new NotFoundException();
     }
@@ -63,7 +58,6 @@ public class BeerController {
 
   @DeleteMapping(BEER_PATH_ID)
   public ResponseEntity<BeerDTO> deleteById(@PathVariable("beerId") UUID beerId) {
-
     if (!beerService.deleteById(beerId)) {
       throw new NotFoundException();
     }
@@ -72,10 +66,11 @@ public class BeerController {
   }
 
   @PatchMapping(BEER_PATH_ID)
-  public ResponseEntity<BeerDTO> updateBeerPatchById(
+  public ResponseEntity<BeerDTO> patchBeerById(
       @PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
-
-    beerService.patchBeerById(beerId, beer);
+    if (beerService.patchBeerById(beerId, beer).isEmpty()) {
+      throw new NotFoundException();
+    }
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }

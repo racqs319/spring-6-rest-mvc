@@ -15,11 +15,9 @@ import org.springframework.util.StringUtils;
 @Slf4j
 @Service
 public class BeerServiceImpl implements BeerService {
-
   private Map<UUID, BeerDTO> beerMap;
 
   public BeerServiceImpl() {
-
     BeerDTO beer1 =
         BeerDTO.builder()
             .id(UUID.randomUUID())
@@ -67,13 +65,11 @@ public class BeerServiceImpl implements BeerService {
 
   @Override
   public List<BeerDTO> listBeers() {
-
     return List.copyOf(beerMap.values());
   }
 
   @Override
   public Optional<BeerDTO> getBeerById(UUID id) {
-
     log.debug("Get Beer by Id - in service");
 
     return Optional.of(beerMap.get(id));
@@ -81,7 +77,6 @@ public class BeerServiceImpl implements BeerService {
 
   @Override
   public BeerDTO saveBeer(BeerDTO beer) {
-
     BeerDTO savedBeer =
         BeerDTO.builder()
             .id(UUID.randomUUID())
@@ -121,8 +116,7 @@ public class BeerServiceImpl implements BeerService {
   }
 
   @Override
-  public void patchBeerById(UUID beerId, BeerDTO beer) {
-
+  public Optional<BeerDTO> patchBeerById(UUID beerId, BeerDTO beer) {
     BeerDTO existing = beerMap.get(beerId);
 
     if (StringUtils.hasText(beer.getBeerName())) {
@@ -146,5 +140,7 @@ public class BeerServiceImpl implements BeerService {
     }
 
     existing.setUpdateDate(LocalDateTime.now());
+
+    return Optional.of(existing);
   }
 }

@@ -16,7 +16,6 @@ import org.hibernate.annotations.UuidGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Customer {
-
   @Id
   @GeneratedValue(generator = "UUID")
   @UuidGenerator
